@@ -41,6 +41,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class DrinkFragment : Fragment() {
 
@@ -49,8 +51,16 @@ class DrinkFragment : Fragment() {
   private lateinit var decrementButton: Button
   private lateinit var resetButton: Button
 
+  private val drinkManager = DrinkManager(this)
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(bundle: Bundle) {
+    // Save the user's current drinks count
+    bundle.putInt("drinks", drinkTextView.text.toString().toInt())
+    super.onSaveInstanceState(bundle)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -62,11 +72,11 @@ class DrinkFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     drinkTextView = view.findViewById(R.id.drinkTextView)
-    drinkTextView.text = "0"
     incrementButton = view.findViewById(R.id.addButton)
     decrementButton = view.findViewById(R.id.subtractButton)
     resetButton = view.findViewById(R.id.resetButton)
 
+    drinkTextView.text = drinkManager.drinks.toString()
 
     incrementButton.setOnClickListener { incrementDrinkCount() }
     decrementButton.setOnClickListener { decrementDrinkCount() }
