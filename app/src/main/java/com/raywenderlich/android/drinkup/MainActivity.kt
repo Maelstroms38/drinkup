@@ -35,12 +35,13 @@
 package com.raywenderlich.android.drinkup
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.os.PersistableBundle
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Main Screen
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     // Switch to AppTheme for displaying the activity
@@ -50,9 +51,5 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     // Your code
-    val fragmentTransaction = supportFragmentManager.beginTransaction()
-    fragmentTransaction.replace(R.id.drink_fragment, DrinkFragment())
-    fragmentTransaction.commit()
-
   }
 }
