@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-  <FrameLayout
+  <fragment
       android:id="@+id/drink_fragment"
+      android:name="com.raywenderlich.android.drinkup.DrinkFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
-  </FrameLayout>
+  </fragment>
 
 </LinearLayout>
