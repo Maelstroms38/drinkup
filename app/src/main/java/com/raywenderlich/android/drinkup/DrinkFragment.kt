@@ -41,6 +41,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.savedstate.SavedStateRegistry
 
 class DrinkFragment : Fragment() {
 
@@ -50,23 +51,45 @@ class DrinkFragment : Fragment() {
   private lateinit var resetButton: Button
 
   companion object {
-    private const val DRINKS = "drinks"
+    private const val SAVED_STATE_KEY = "drinks_saved_state"
+    private const val DRINKS_KEY = "drinks_key"
+    private const val DRINKS_DEFAULT_VALUE = "0"
   }
+
+  private val savedStateProvider = SavedStateRegistry.SavedStateProvider {
+    Bundle().apply {
+      putString(DRINKS_KEY, drinks)
+    }
+  }
+
+  private lateinit var drinks: String
 
   override fun onSaveInstanceState(bundle: Bundle) {
     super.onSaveInstanceState(bundle)
     // Save the user's current drinks count
-    bundle.putInt(DRINKS, drinkTextView.text.toString().toInt())
+    bundle.putString(DRINKS_KEY, drinkTextView.text.toString())
   }
 
   override fun onViewStateRestored(savedInstanceState: Bundle?) {
     super.onViewStateRestored(savedInstanceState)
     if (savedInstanceState != null) {
-      val restoredDrinks = savedInstanceState.getInt(DRINKS, 0)
-      drinkTextView.text = restoredDrinks.toString()
+      // Display the restored number of drinks
+      val restoredDrinks = savedInstanceState.getString(DRINKS_KEY, DRINKS_DEFAULT_VALUE)
+      drinkTextView.text = restoredDrinks
     } else {
-      drinkTextView.text = "0"
+      drinkTextView.text = DRINKS_DEFAULT_VALUE
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // Restore the previously saved state
+    drinks = savedStateRegistry
+        .consumeRestoredStateForKey(SAVED_STATE_KEY)
+        ?.getString(DRINKS_KEY) ?: DRINKS_DEFAULT_VALUE
+    // Register for future state changes
+    savedStateRegistry
+        .registerSavedStateProvider(SAVED_STATE_KEY, savedStateProvider)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -100,6 +123,6 @@ class DrinkFragment : Fragment() {
   }
 
   private fun resetDrinkCount() {
-    drinkTextView.text = "0"
+    drinkTextView.text = DRINKS_DEFAULT_VALUE
   }
 }
